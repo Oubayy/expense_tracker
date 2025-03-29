@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import (QWidget, QLabel, QPushButton, QLineEdit, QComboBox,
                              QMessageBox, QTableWidgetItem, QHeaderView)
 
 from PyQt6.QtCore import QDate, Qt
+from database import fetch_expenses, add_expenses, delete_expenses
 
 
 class ExpenseTracker(QWidget):

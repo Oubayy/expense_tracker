@@ -1,4 +1,3 @@
-#
 from PyQt6.QtSql import QSqlDatabase, QSqlQuery
 
 def init_db(db_name): # to initialize the database
@@ -21,17 +20,35 @@ def init_db(db_name): # to initialize the database
 
     return True
 
+# We now need 3 SQL functions for fetching, adding and deleting in order to interact with the db
+
 def fetch_expenses():
+    """
+    Every time we load the app or make a change to the database this function gets called to update the table visually
+    :return:
+    """
     query = QSqlQuery("SELECT * FROM expenses ORDER BY date DESC")
     expenses = []
     while query.next():
         expenses.append([query.value(i)] for i in range(5)) # We have 5 columns
     return expenses
 
-def add_expenses():
-    pass
+def add_expenses(date, category, amount, description):
+    query = QSqlQuery()
+    query.prepare("""
+                  INSERT INTO expenses (date, category, amount, description)
+                  VALUES (?, ?, ?, ?)
+                  """) # prepare to send data off into the db
+    # question marks need a binding value
+    query.addBindValue(date)
+    query.addBindValue(category)
+    query.addBindValue(amount)
+    query.addBindValue(description)
 
-def delete_expenses():
-    pass
+    return query.exec()
 
-# We now need 3 SQL functions for fetching, adding and deleting in order to interact with the db
+def delete_expenses(expense_id):
+    query = QSqlQuery()
+    query.prepare("DELETE FROM expenses WHERE id = ?")
+    query.addBindValue(expense_id)
+    return query.exec()

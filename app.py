@@ -43,6 +43,9 @@ class ExpenseTracker(QWidget):
 
         self.populate_dropdown()
 
+        self.add_button.clicked.connect(self.add_expense)
+        self.del_button.clicked.connect(self.delete_expense)
+
         self.setup_layout()
 
     def setup_layout(self):
@@ -128,5 +131,3 @@ class ExpenseTracker(QWidget):
 
         if confirmation == QMessageBox.StandardButton.Yes and delete_expenses(expense_id):
             self.load_table_data()
-
-

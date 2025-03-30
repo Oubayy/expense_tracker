@@ -30,7 +30,9 @@ def fetch_expenses():
     query = QSqlQuery("SELECT * FROM expenses ORDER BY date DESC")
     expenses = []
     while query.next():
-        expenses.append([query.value(i)] for i in range(5)) # We have 5 columns
+        row = [[query.value(i)] for i in range(5)]
+        # expenses.append([[query.value(i)] for i in range(5)]) # We have 5 columns
+        expenses.append(row)
     return expenses
 
 def add_expenses(date, category, amount, description):

@@ -3,6 +3,8 @@ from PyQt6.QtWidgets import (QWidget, QLabel, QPushButton, QLineEdit, QComboBox,
                              QMessageBox, QTableWidgetItem, QHeaderView)
 
 from PyQt6.QtCore import QDate, Qt
+from unicodedata import category
+
 from database import fetch_expenses, add_expenses, delete_expenses
 
 
@@ -11,6 +13,7 @@ class ExpenseTracker(QWidget):
         super().__init__()
         self.settings()
         self.initUI()
+        self.load_table_data()
 
     def settings(self):
         self.setGeometry(300, 300, 525, 475)
@@ -74,3 +77,56 @@ class ExpenseTracker(QWidget):
     def populate_dropdown(self):
         categories = ["Snacks", "Sport", "School", "Personal", "Other"]
         self.dropdown.addItems(categories)
+
+    def load_table_data(self):
+        """
+        Takes information from the db and project it into our application
+        (should be called each time we make a change to the db)
+        :return:
+        """
+        expenses = fetch_expenses()
+        self.table.setRowCount(0)
+        for row_index, expense in enumerate(expenses):
+            self.table.insertRow(row_index)
+            for col_index, data in enumerate(expense):
+                self.table.setItem(row_index, col_index, QTableWidgetItem(str(data)))
+
+    # We need a function that collects date, category, amount and description and then calls add_expenses
+
+    def add_expense(self):
+        date = self.date_box.date().toString("dd-mm-yyyy")
+        category = self.dropdown.currentText() # QComboBox
+        amount = self.amount.text() # QLineEdit
+        description = self.description.text()
+
+        # Checks:
+        if not amount or not description:
+            QMessageBox.warning(self, "Input Error", "Amount and Description can not be empty")
+            return
+
+        if add_expenses(date, category, amount, description):
+            self.load_table_data() # Since we are making a change to the db, load should be called
+            self.clear_inputs()
+        else:
+            QMessageBox.critical(self, "Error", "Failed to add expense")
+
+    def clear_inputs(self):
+        self.date_box.setDate(QDate.currentDate())
+        self.dropdown.setCurrentIndex(0)
+        self.amount.clear()
+        self.description.clear()
+
+    def delete_expense(self):
+        # We want to click on a row in the table, get the ID and then delete it from the db
+        selected_row = self.table.currentRow()
+        if selected_row == -1:
+            QMessageBox.warning(self, "Oops", "You haven't selected a row to delete.")
+            return
+
+        expense_id = int(self.table.item(selected_row, 0).text())
+        confirmation = QMessageBox.question(self, "Confirm", "Are you sure that you want to delete this expense?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+
+        if confirmation == QMessageBox.StandardButton.Yes and delete_expenses(expense_id):
+            self.load_table_data()
+
+

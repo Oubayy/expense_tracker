@@ -25,7 +25,7 @@ def init_db(db_name): # to initialize the database
 def fetch_expenses():
     """
     Every time we load the app or make a change to the database this function gets called to update the table visually
-    :return:
+    :return: a list
     """
     query = QSqlQuery("SELECT * FROM expenses ORDER BY date DESC")
     expenses = []

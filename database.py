@@ -10,7 +10,7 @@ def init_db(db_name): # to initialize the database
     query = QSqlQuery()
     query.exec("""
                CREATE TABLE IF NOT EXISTS expenses (
-                    id INTEGER PRIMARY KEY AUTO INCREMENT,
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
                     date TEXT,
                     category TEXT,
                     amount REAL,
@@ -30,7 +30,7 @@ def fetch_expenses():
     query = QSqlQuery("SELECT * FROM expenses ORDER BY date DESC")
     expenses = []
     while query.next():
-        row = [[query.value(i)] for i in range(5)]
+        row = [query.value(i) for i in range(5)]
         # expenses.append([[query.value(i)] for i in range(5)]) # We have 5 columns
         expenses.append(row)
     return expenses

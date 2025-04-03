@@ -46,6 +46,8 @@ class ExpenseTracker(QWidget):
         self.add_button.clicked.connect(self.add_expense)
         self.del_button.clicked.connect(self.delete_expense)
 
+        self.apply_styles()
+
         self.setup_layout()
 
     def setup_layout(self):
@@ -76,6 +78,51 @@ class ExpenseTracker(QWidget):
         master.addWidget(self.table)
 
         self.setLayout(master)
+
+    def apply_styles(self):
+        self.setStyleSheet("""
+                            QWidget{
+                                background-color: 3e3e9f2;
+                                font-family: Arial, sans-serif;
+                                font-size: 14px;
+                                color:#333;
+                            }
+                            
+                            QLabel{
+                                font-size: 16px;
+                                font-weight: bold;
+                                color: #2c3e90;
+                                padding: 5px;
+                            }
+                            
+                            QLineEdit, QComboBox, QDateEdit{
+                                background-color: #fff;
+                                font-size: 14px;
+                                color: #333;
+                                border: 1px solid 3b0bfc6;
+                                border-radius: 15px;
+                                padding: 5px;
+                            }
+                            
+                            QlineEdit:hover, QComboBox:hover, QDateEdit:hover{
+                                border: 1px solid #4caf50;
+                            }
+                            
+                            QlineEdit:focus, QComboBox:focus, QDateEdit:focus{
+                                border: 1px solid #2a9d8f;
+                                background-color: #f5f9fc;
+                            }
+                            
+                            QTableWidget{
+                                background-color: #fff;
+                                alternate-background-color: #f2f7fb;
+                                gridline-color: #c0c9d0;
+                                selection-background-color: #4caf50;
+                                selection-color: white;
+                                font-size: 14px;
+                                border 1px solid #cfd9e1;
+                            }
+                           """)
 
     def populate_dropdown(self):
         categories = ["Snacks", "Sport", "School", "Personal", "Other"]
